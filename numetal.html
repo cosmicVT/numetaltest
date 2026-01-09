@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NU METAL ARCHIVE</title>
+
+<style>
+:root {
+  --bg: #070707;
+  --panel: #0f0f0f;
+  --border: #3a3a3a;
+  --text: #d0d0d0;
+  --muted: #777;
+  --acid: #6bff3d;
+  --rust: #b22a1c;
+  --cold: #5aa9ff;
+}
+
+/* ===== BASE ===== */
+body {
+  margin: 0;
+  font-family: "Courier New", monospace;
+  background: radial-gradient(circle at top, #111 0%, var(--bg) 65%);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ===== SCANLINES ===== */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.025),
+      rgba(255,255,255,0.025) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+  opacity: 0.18;
+}
+
+/* ===== HEADER ===== */
+header {
+  text-align: center;
+  padding: 25px;
+  background: linear-gradient(180deg, #111, #060606);
+  border-bottom: 2px solid var(--border);
+}
+
+header h1 {
+  letter-spacing: 5px;
+  font-size: 26px;
+  color: var(--acid);
+  text-shadow:
+    0 0 8px rgba(107,255,61,0.4),
+    -1px 0 rgba(255,0,0,0.15),
+    1px 0 rgba(0,255,255,0.15);
+}
+
+header p {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ===== NAV ===== */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding: 10px;
+  background: #0d0d0d;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+nav a {
+  color: var(--cold);
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: var(--acid);
+}
+
+/* ===== AUDIO TOGGLE ===== */
+#audioToggle {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size: 10px;
+  padding: 4px 8px;
+  background: #0c0c0c;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+#audioToggle.active {
+  color: var(--acid);
+  box-shadow: 0 0 6px rgba(107,255,61,0.4);
+}
+
+/* ===== MAIN ===== */
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 25px;
+}
+
+/* ===== GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: linear-gradient(180deg, #111, #0a0a0a);
+  border: 1px solid var(--border);
+  padding: 12px;
+  transition: transform 0.15s;
+}
+
+.card:hover {
+  transform: translateY(-2px) skewX(-0.6deg);
+}
+
+.card h3 {
+  margin: 0 0 5px;
+  font-size: 13px;
+  color: var(--rust);
+}
+
+.card p {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ===== TAGS ===== */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.tag {
+  font-size: 10px;
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  background: #0f0f0f;
+  color: var(--acid);
+}
+
+/* ===== PLACEHOLDERS ===== */
+.image-placeholder,
+.video-placeholder,
+.text-placeholder {
+  border: 1px dashed var(--border);
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #0b0b0b,
+      #0b0b0b 10px,
+      #111 10px,
+      #111 20px
+    );
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  font-size: 11px;
+}
+
+.image-placeholder { height: 180px; }
+.video-placeholder { height: 200px; }
+.text-placeholder { padding: 35px; }
+
+/* ===== BUTTON ===== */
+button {
+  font-family: inherit;
+  background: #0e0e0e;
+  color: var(--cold);
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+button:hover {
+  color: var(--acid);
+}
+</style>
+</head>
+
+<body>
+
+<header id="header">
+  <h1>NU METAL ARCHIVE</h1>
+  <p>1997–2002 media transmission</p>
+</header>
+
+<nav>
+  <a href="#" onclick="loadHome()">HOME</a>
+  <a href="#" onclick="loadCategory('photos')">PHOTOS</a>
+  <a href="#" onclick="loadCategory('videos')">VIDEOS</a>
+  <a href="#" onclick="loadCategory('magazines')">MAGAZINES</a>
+  <a href="#" onclick="loadCategory('interviews')">INTERVIEWS</a>
+</nav>
+
+<main id="content"></main>
+
+<button id="audioToggle">AUDIO: OFF</button>
+
+<script>
+/* ===== ARCHIVE DATA ===== */
+const archive = {
+  photos: [{
+    id: "korn_1998",
+    title: "Korn Promo Photo",
+    year: 1998,
+    type: "image",
+    description: "Promotional photograph from the Follow the Leader era.",
+    tags: ["Korn", "1998", "Promo", "Photo"]
+  }],
+  videos: [{
+    id: "lb_1999",
+    title: "Limp Bizkit MTV Interview",
+    year: 1999,
+    type: "video",
+    description: "MTV interview during Significant Other release cycle.",
+    tags: ["Limp Bizkit", "1999", "MTV", "Interview"]
+  }],
+  magazines: [{
+    id: "hitparader_2001",
+    title: "Hit Parader Scan",
+    year: 2001,
+    type: "image",
+    description: "Magazine scan placeholder.",
+    tags: ["Magazine", "2001", "Hit Parader"]
+  }],
+  interviews: [{
+    id: "slipknot_text",
+    title: "Slipknot Text Interview",
+    year: 2000,
+    type: "text",
+    description: "Archived text interview placeholder.",
+    tags: ["Slipknot", "2000", "Interview", "Text"]
+  }]
+};
+
+const content = document.getElementById("content");
+
+/* ===== PAGE LOADERS ===== */
+function loadHome() {
+  content.innerHTML = `
+    <h2>WELCOME</h2>
+    <p>This archive preserves nu metal culture through degraded media,
+    damaged broadcasts, and recovered print artifacts.</p>
+  `;
+}
+
+function loadCategory(category) {
+  let html = `<h2>${category.toUpperCase()}</h2><div class="grid">`;
+  archive[category].forEach(item => {
+    html += `
+      <div class="card">
+        <h3>${item.title}</h3>
+        <p>${item.year}</p>
+        <div class="tags">
+          ${item.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+        </div>
+        <button onclick="loadItem('${category}','${item.id}')">VIEW</button>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  content.innerHTML = html;
+}
+
+function loadItem(category, id) {
+  const item = archive[category].find(i => i.id === id);
+  const media =
+    item.type === "image" ? `<div class="image-placeholder">IMAGE PLACEHOLDER</div>` :
+    item.type === "video" ? `<div class="video-placeholder">VIDEO PLACEHOLDER</div>` :
+    `<div class="text-placeholder">TEXT PLACEHOLDER</div>`;
+
+  content.innerHTML = `
+    <button onclick="loadCategory('${category}')">← BACK</button>
+    <h2>${item.title}</h2>
+    ${media}
+    <div class="tags">
+      ${item.tags.map(t => `<span class="tag">${t}</span>`).join("")}
+    </div>
+    <p><strong>YEAR:</strong> ${item.year}</p>
+    <p>${item.description}</p>
+  `;
+}
+
+/* ===== REAL FLICKER (RANDOM) ===== */
+setInterval(() => {
+  const h = document.getElementById("header");
+  h.style.filter = "brightness(0.85)";
+  setTimeout(() => h.style.filter = "brightness(1)", 60);
+}, Math.random() * 4000 + 2000);
+
+/* ===== AUDIO HISS (PLACEHOLDER MP3) ===== */
+let audioCtx, noise, filter;
+let playing = false;
+
+document.getElementById("audioToggle").onclick = () => {
+  if (!playing) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    noise.loop = true;
+
+    filter = audioCtx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 1200;
+
+    noise.connect(filter).connect(audioCtx.destination);
+    noise.start();
+
+    playing = true;
+    audioToggle.textContent = "AUDIO: ON";
+    audioToggle.classList.add("active");
+  } else {
+    audioCtx.close();
+    playing = false;
+    audioToggle.textContent = "AUDIO: OFF";
+    audioToggle.classList.remove("active");
+  }
+};
+
+loadHome();
+</script>
+
+</body>
+</html>
