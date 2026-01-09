@@ -211,20 +211,20 @@ const archive = {
     tags: ["monkeynut", "1874", "youtube"]
   }],
   magazines: [{
-    id: "hitparader_2001",
-    title: "Hit Parader Scan",
+    id: "magscan",
+    title: "Scan",
     year: 2001,
     type: "image",
     description: "Magazine scan placeholder.",
-    tags: ["Magazine", "2001", "Hit Parader"]
+    tags: ["Magazine", "2001"]
   }],
   interviews: [{
-    id: "slipknot_text",
-    title: "Slipknot Text Interview",
-    year: 2000,
+    id: "Allan Weiss of monkeynut",
+    title: "Monkeynut Text Interview with Allan Weiss",
+    year: 2025,
     type: "text",
-    description: "Archived text interview placeholder.",
-    tags: ["Slipknot", "2000", "Interview", "Text"]
+    description: "Archived text interview.",
+    tags: ["monkeynut", "2025", "Interview", "Text"]
   }]
 };
 
@@ -233,8 +233,7 @@ const content = document.getElementById("content");
 function loadHome() {
   content.innerHTML = `
     <h2>WELCOME</h2>
-    <p>This archive preserves nu metal culture through degraded media,
-    damaged broadcasts, and recovered print artifacts.</p>
+    <p>This archive preserves nu metal from varius sources to veiw for the public.</p>
   `;
 }
 
@@ -278,7 +277,29 @@ function loadItem(category, id) {
     `;
   }
   if (item.type === "text") {
-    media = `<div style="border:1px solid var(--border); padding:15px; margin-bottom:15px; font-size:11px; background:#0b0b0b;"></div>`;
+    media = `<div style="border:1px solid var(--border); padding:15px; margin-bottom:15px; font-size:11px; background:#0b0b0b;">1.What inspired you and your friends to start Monkeynut?
+
+ It all started when I moved to Columbus, Ohio to attend the Ohio State University, and being a musician in high school, I wanted to see about joining a band in Columbus. I answered an ad in a local music store looking for a "heavy handed" drummer - that turned out to be Brian Leitwein (our guitarist) who was in a band, and we started jamming together. From there, we went through a couple members, and when we were looking for a second guitarist, Brian's brother Randy Leitwein had gotten older and also played guitar, so he joined the band. Our original bass player Chris Cox joined the band, and that formed the original line up under the name Dominion. We went through a couple singers, and then finally Randy began doing some singing - eventually we stopped looking for a singer, and Randy stepped into the roll - originally he played guitar and sang, but eventually he stopped the guitar and just focused on the vocals.
+
+2.Who were your favorite local Ohio bands to tour withAny fun stories with Cringe, Bobaflex, Supafreak, Tsybil, etc.?
+
+We played with a LOT of local bands from in the Ohio area - too many to mention! Some of the bands we played with a lot are the bands you mentioned - such as Cringe (later named Noise Auction), Bobaflex (we even went down to West Virginia to play with them), Tsybil, Supafreak.
+
+We liked playing with Cringe a lot, and some other memorable bands I can think of are Millenia (from Chillicothe, Ohio), Crush Effect (which was a pretty hard core thrash band), Kids From Krypton (from Toledo), Victim, 616 Undone, etc. Those are some that come to memory, but there were so many that I would have to go back through our old flyers and ticket stubs to remember more of them!
+
+3.What inspired the glow-in-the-dark paint?
+
+The paint idea started with Randy just wearing white makeup-paint on his face on stage, just to stand out a bit from the other local bands. From there, someone brought up the idea of black-light paint, and we thought what would be quite unique, so we gave that a try - originally it was just smearing paint on ourselves in no particular pattern!  That seemed to be well-received, so we developed it further into specific face patterns for each member, and then wearing the black uniforms and adding paint to those. From there, we started bringing out our own black-light stage setup, banners, strobes, etc.  It was something that we were constantly developing, and it was really a way for us to stand out from the rest of the bands in our area.
+
+4.Why did Monkeynut disband Any chance of a reunion someday?
+
+When we decided to disband, we had been playing for 11 years or so, we had turned down a couple of independent record deals (they weren't that good), and we started having kids and buying homes - we just decided that making the band a career might not happen, our priorities were changing, and we wanted to go out while we were still relevant - we saw other local bands that just kept playing "past their prime", and we didn't want to go out like that. It was a tough decision, but in hind sight the record deals we were offered would probably have put us into serious debt!
+
+As for a reunion? Well we are all still in contact today - Brian and I are in a local cover band (just playing classic rock / country songs to have fun), and Randy is working on a new project called My Dark Room - I have been recording some drum tracks for him, and our bassist Mark may be adding some bass tracks for him as well. That being said, I doubt a Monkeynut reunion is in the cards. We do get together and jam Monkenut songs from time to time, but it seems the older we get the harder it is to find time to get together just to hang out, let alone prepare for a reunion.
+
+5.Did you know that some of Monkeynut’s music is being uploaded illegally to streaming platforms?
+
+That doesn't surprise me! We did have a distribution deal with CD Baby to distribute our music (originally selling the CDs, and then digital distribution), and they did distribute our music to a lot of different platforms. We still do get royalty checks from time to time, but it has been long enough that we aren't currently trying to find those that are sharing or uploading the music illegally - the time and resources we would have to spend to do that doesn't warrant the potential return.</div>`;
   }
 
   content.innerHTML = `
@@ -298,3 +319,4 @@ loadHome();
 
 </body>
 </html>
+
