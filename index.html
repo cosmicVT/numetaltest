@@ -193,7 +193,6 @@ button:hover {
 <button id="audioToggle">AUDIO: OFF</button>
 
 <script>
-/* ===== ARCHIVE DATA ===== */
 const archive = {
   photos: [{
     id: "22 even",
@@ -231,7 +230,6 @@ const archive = {
 
 const content = document.getElementById("content");
 
-/* ===== PAGE LOADERS ===== */
 function loadHome() {
   content.innerHTML = `
     <h2>WELCOME</h2>
@@ -266,11 +264,7 @@ function loadItem(category, id) {
     media = `<img src="1.jpg" alt="${item.title}" style="width:100%; border:1px solid var(--border); margin-bottom:15px;">`;
   }
   if (item.type === "video") {
-    media = `
-      <video controls style="width:100%; border:1px solid var(--border); margin-bottom:15px;">
-        <source src="2.mp4" type="video/mp4">
-      </video>
-    `;
+    media = `<video src="2.mp4" controls preload="auto" style="width:100%; border:1px solid var(--border); margin-bottom:15px;"></video>`;
   }
   if (item.type === "text") {
     media = `<div style="border:1px solid var(--border); padding:15px; margin-bottom:15px; font-size:11px; background:#0b0b0b;"></div>`;
@@ -288,44 +282,8 @@ function loadItem(category, id) {
   `;
 }
 
-/* ===== AUDIO HISS (PLACEHOLDER MP3) ===== */
-let audioCtx, noise, filter;
-let playing = false;
-
-document.getElementById("audioToggle").onclick = () => {
-  if (!playing) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const bufferSize = 2 * audioCtx.sampleRate;
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
-    }
-    noise = audioCtx.createBufferSource();
-    noise.buffer = buffer;
-    noise.loop = true;
-
-    filter = audioCtx.createBiquadFilter();
-    filter.type = "lowpass";
-    filter.frequency.value = 1200;
-
-    noise.connect(filter).connect(audioCtx.destination);
-    noise.start();
-
-    playing = true;
-    audioToggle.textContent = "AUDIO: ON";
-    audioToggle.classList.add("active");
-  } else {
-    audioCtx.close();
-    playing = false;
-    audioToggle.textContent = "AUDIO: OFF";
-    audioToggle.classList.remove("active");
-  }
-};
-
 loadHome();
 </script>
 
 </body>
 </html>
-
