@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>NU METAL ARCHIVE</title>
+<title>NU METAL ARCHIVE2</title>
 
 <style>
 :root {
@@ -264,7 +264,18 @@ function loadItem(category, id) {
     media = `<img src="1.jpg" alt="${item.title}" style="width:100%; border:1px solid var(--border); margin-bottom:15px;">`;
   }
   if (item.type === "video") {
-    media = `<video src="2.mp4" controls preload="auto" style="width:100%; border:1px solid var(--border); margin-bottom:15px;"></video>`;
+    media = `
+      <iframe
+        width="100%"
+        height="360"
+        src="https://www.youtube.com/embed/ir58mej0qGA"
+        title="${item.title}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="border:1px solid var(--border); margin-bottom:15px;"
+      ></iframe>
+    `;
   }
   if (item.type === "text") {
     media = `<div style="border:1px solid var(--border); padding:15px; margin-bottom:15px; font-size:11px; background:#0b0b0b;"></div>`;
