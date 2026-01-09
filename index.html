@@ -156,31 +156,6 @@ main {
   color: var(--acid);
 }
 
-/* ===== PLACEHOLDERS ===== */
-.image-placeholder,
-.video-placeholder,
-.text-placeholder {
-  border: 1px dashed var(--border);
-  background:
-    repeating-linear-gradient(
-      45deg,
-      #0b0b0b,
-      #0b0b0b 10px,
-      #111 10px,
-      #111 20px
-    );
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 15px;
-  font-size: 11px;
-}
-
-.image-placeholder { height: 180px; }
-.video-placeholder { height: 200px; }
-.text-placeholder { padding: 35px; }
-
 /* ===== BUTTON ===== */
 button {
   font-family: inherit;
@@ -285,10 +260,21 @@ function loadCategory(category) {
 
 function loadItem(category, id) {
   const item = archive[category].find(i => i.id === id);
-  const media =
-    item.type === "image" ? `<div class="image-placeholder">IMAGE PLACEHOLDER</div>` :
-    item.type === "video" ? `<div class="video-placeholder">VIDEO PLACEHOLDER</div>` :
-    `<div class="text-placeholder">TEXT PLACEHOLDER</div>`;
+
+  let media = "";
+  if (item.type === "image") {
+    media = `<img src="1.jpg" alt="${item.title}" style="width:100%; border:1px solid var(--border); margin-bottom:15px;">`;
+  }
+  if (item.type === "video") {
+    media = `
+      <video controls style="width:100%; border:1px solid var(--border); margin-bottom:15px;">
+        <source src="" type="video/mp4">
+      </video>
+    `;
+  }
+  if (item.type === "text") {
+    media = `<div style="border:1px solid var(--border); padding:15px; margin-bottom:15px; font-size:11px; background:#0b0b0b;"></div>`;
+  }
 
   content.innerHTML = `
     <button onclick="loadCategory('${category}')">← BACK</button>
@@ -301,13 +287,6 @@ function loadItem(category, id) {
     <p>${item.description}</p>
   `;
 }
-
-/* ===== REAL FLICKER (RANDOM) ===== */
-setInterval(() => {
-  const h = document.getElementById("header");
-  h.style.filter = "brightness(0.85)";
-  setTimeout(() => h.style.filter = "brightness(1)", 60);
-}, Math.random() * 4000 + 2000);
 
 /* ===== AUDIO HISS (PLACEHOLDER MP3) ===== */
 let audioCtx, noise, filter;
