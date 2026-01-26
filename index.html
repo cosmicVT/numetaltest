@@ -1,322 +1,455 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>NU METAL ARCHIVE2</title>
-
+<meta charset="UTF-8" />
+<title>NU METAL ARCHIVE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
-:root {
-  --bg: #070707;
-  --panel: #0f0f0f;
-  --border: #3a3a3a;
-  --text: #d0d0d0;
-  --muted: #777;
-  --acid: #6bff3d;
-  --rust: #b22a1c;
-  --cold: #5aa9ff;
-}
-
-/* ===== BASE ===== */
+/* ---------- GENERAL ---------- */
+* { margin:0; padding:0; box-sizing:border-box; }
 body {
-  margin: 0;
-  font-family: "Courier New", monospace;
-  background: radial-gradient(circle at top, #111 0%, var(--bg) 65%);
-  color: var(--text);
-  overflow-x: hidden;
+  background:#0b0b0b; 
+  color:#e5e5e5; 
+  font-family:Trebuchet MS,Tahoma,Arial,sans-serif;
+  background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0,rgba(255,255,255,.02) 1px,transparent 1px,transparent 3px);
 }
+a { color:#8aff00; text-decoration:none; }
+a:hover { text-shadow:0 0 6px #8aff00; }
+header { background:linear-gradient(180deg,#1a1a1a,#050505); border-bottom:2px solid #2e2e2e; padding:20px; position:relative; }
+header h1 { font-size:36px; letter-spacing:3px; color:#fff; text-shadow:2px 2px 0 #000,0 0 12px #ff0033; }
+header p { color:#999; font-size:14px; margin-top:6px; }
+nav { margin-top:15px; display:flex; flex-wrap:wrap; gap:12px; }
+nav a { background:#111; border:1px solid #333; padding:8px 14px; font-size:13px; text-transform:uppercase; cursor:pointer; }
+.search-bar { margin-top:20px; display:flex; gap:10px; }
+.search-bar input { flex:1; background:#000; border:1px solid #444; padding:10px; color:#8aff00; font-family:monospace; }
+.search-bar button { background:#8aff00; border:none; color:#000; font-weight:bold; padding:10px 18px; cursor:pointer; }
+main { padding:25px; }
+section { display:none; animation:fadeIn .35s ease-in-out; }
+section.active { display:block; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.band-grid, .media-grid { display:grid; gap:20px; }
+.band-grid { grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); }
+.media-grid { grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); }
+.band-card, .media-item { background:linear-gradient(180deg,#121212,#050505); border:1px solid #2e2e2e; padding:15px; cursor:pointer; }
+.band-card:hover, .media-item:hover { box-shadow:0 0 12px rgba(255,0,51,.3); }
+.band-card h3 { color:#ff0033; margin-bottom:6px; text-shadow:1px 1px 0 #000; }
+.band-card p { font-size:13px; color:#bbb; margin-bottom:6px; }
+.tags { margin-top:6px; }
+.tag { display:inline-block; background:#000; border:1px solid #333; padding:3px 6px; font-size:11px; margin:2px; color:#8aff00; }
+.media-item img { max-width:100%; filter:grayscale(30%) contrast(120%); }
+iframe { width:100%; height:180px; border:none; }
+.paper { background:#111; border:1px dashed #555; padding:20px; font-family:Courier New,monospace; line-height:1.6; }
+#detail h2 { color:#ff0033; margin-bottom:10px; }
+.random-btn { margin-top:15px; background:#ff0033; color:#000; border:none; padding:8px 14px; font-weight:bold; cursor:pointer; }
+footer { background:#050505; border-top:2px solid #2e2e2e; padding:20px; text-align:center; font-size:12px; color:#777; margin-top:40px; }
+.paper-img { width:100%; }
+.video-title { font-size:13px; margin-top:5px; color:#fff; }
 
-/* ===== SCANLINES ===== */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255,255,255,0.025),
-      rgba(255,255,255,0.025) 1px,
-      transparent 1px,
-      transparent 2px
-    );
-  opacity: 0.18;
-}
+/* ---------- INTERVIEWS ---------- */
+.interview-box { background:#111; border:1px dashed #555; padding:15px; font-family:Courier New, monospace; line-height:1.6; max-height:120px; overflow:hidden; color:#ddd; position:relative; }
+.interview-title { color:#ff0033; font-weight:bold; margin-bottom:6px; }
+.interview-box::after { content:"[ click to read full interview ]"; display:block; margin-top:8px; color:#ff0033; font-size:12px; }
 
-/* ===== HEADER ===== */
-header {
-  text-align: center;
-  padding: 25px;
-  background: linear-gradient(180deg, #111, #060606);
-  border-bottom: 2px solid var(--border);
+/* ---------- MODAL ---------- */
+.modal {
+  position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85);
+  display:flex; align-items:center; justify-content:center; z-index:999;
 }
-
-header h1 {
-  letter-spacing: 5px;
-  font-size: 26px;
-  color: var(--acid);
-  text-shadow:
-    0 0 8px rgba(107,255,61,0.4),
-    -1px 0 rgba(255,0,0,0.15),
-    1px 0 rgba(0,255,255,0.15);
+.modal.hidden { display:none; }
+.modal-content {
+  background:#111; border:1px solid #555; padding:20px;
+  max-width:700px; width:90%; max-height:80vh; overflow-y:auto;
+  font-family:Courier New, monospace; color:#ddd;
+  position:relative;
 }
-
-header p {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-/* ===== NAV ===== */
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  padding: 10px;
-  background: #0d0d0d;
-  border-bottom: 1px solid var(--border);
-  font-size: 12px;
-}
-
-nav a {
-  color: var(--cold);
-  text-decoration: none;
-}
-
-nav a:hover {
-  color: var(--acid);
-}
-
-/* ===== AUDIO TOGGLE ===== */
-#audioToggle {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  font-size: 10px;
-  padding: 4px 8px;
-  background: #0c0c0c;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  cursor: pointer;
-}
-
-#audioToggle.active {
-  color: var(--acid);
-  box-shadow: 0 0 6px rgba(107,255,61,0.4);
-}
-
-/* ===== MAIN ===== */
-main {
-  max-width: 900px;
-  margin: auto;
-  padding: 25px;
-}
-
-/* ===== GRID ===== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-/* ===== CARD ===== */
-.card {
-  background: linear-gradient(180deg, #111, #0a0a0a);
-  border: 1px solid var(--border);
-  padding: 12px;
-  transition: transform 0.15s;
-}
-
-.card:hover {
-  transform: translateY(-2px) skewX(-0.6deg);
-}
-
-.card h3 {
-  margin: 0 0 5px;
-  font-size: 13px;
-  color: var(--rust);
-}
-
-.card p {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-/* ===== TAGS ===== */
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-
-.tag {
-  font-size: 10px;
-  padding: 2px 6px;
-  border: 1px solid var(--border);
-  background: #0f0f0f;
-  color: var(--acid);
-}
-
-/* ===== BUTTON ===== */
-button {
-  font-family: inherit;
-  background: #0e0e0e;
-  color: var(--cold);
-  border: 1px solid var(--border);
-  padding: 4px 8px;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-button:hover {
-  color: var(--acid);
-}
+.modal-text { white-space:pre-wrap; line-height:1.6; margin-top:15px; }
+.close { position:absolute; top:10px; right:15px; font-size:22px; cursor:pointer; color:#ff0033; }
 </style>
 </head>
-
 <body>
 
-<header id="header">
-  <h1>NU METAL ARCHIVE</h1>
-  <p>1997–2002 media transmission</p>
+<!-- ---------- MODAL ---------- -->
+<div id="interviewModal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close" onclick="closeInterview()">&times;</span>
+    <h3 id="modalTitle"></h3>
+    <div id="modalText" class="modal-text"></div>
+  </div>
+</div>
+
+<header>
+<h1>NU METAL ARCHIVE</h1>
+<p>Vann • underground media • 2026</p>
+<nav>
+<a onclick="showSection('home')">Home</a>
+<a onclick="showSection('photos')">Photos</a>
+<a onclick="showSection('videos')">Videos</a>
+<a onclick="showSection('papers')">Papers / Ads</a>
+<a onclick="showSection('interviews')">Interviews</a>
+</nav>
+<div class="search-bar">
+<input id="searchInput" placeholder="Search bands or tags…" onkeyup="renderAll()" />
+<button onclick="randomBand()">RANDOM BAND</button>
+</div>
 </header>
 
-<nav>
-  <a href="#" onclick="loadHome()">HOME</a>
-  <a href="#" onclick="loadCategory('photos')">PHOTOS</a>
-  <a href="#" onclick="loadCategory('videos')">VIDEOS</a>
-  <a href="#" onclick="loadCategory('magazines')">MAGAZINES</a>
-  <a href="#" onclick="loadCategory('interviews')">INTERVIEWS</a>
-</nav>
+<main>
+<section id="home" class="active">
+<h2>Band Archive</h2><br>
+<div class="band-grid" id="bandGrid"></div>
+</section>
 
-<main id="content"></main>
+<section id="detail">
+<h2 id="detailName"></h2>
+<p id="detailDesc"></p><br>
+<div id="detailTags"></div><br>
+<div id="detailPhotos" class="media-grid"></div><br>
+<button onclick="showSection('home')">← Back to archive</button>
+</section>
 
-<button id="audioToggle">AUDIO: OFF</button>
+<section id="photos">
+<h2>Photo Archive</h2><br>
+<div class="media-grid" id="photoGrid"></div>
+</section>
+
+<section id="videos">
+<h2>Video Vault</h2><br>
+<div class="media-grid" id="videoGrid"></div>
+</section>
+
+<section id="papers">
+<h2>Papers & Ads</h2><br>
+<div class="media-grid" id="paperGrid"></div>
+</section>
+
+<section id="interviews">
+<h2>Interviews</h2><br>
+<div class="media-grid" id="interviewGrid"></div>
+</section>
+</main>
+
+<footer>NU METAL ARCHIVE © underground preservation project</footer>
 
 <script>
-const archive = {
-  photos: [{
-    id: "22 even",
-    title: "22 even fan art",
-    year: 2026,
-    type: "image",
-    description: "Fan made art by me.",
-    tags: ["22 even", "2026", "fanart", "Photo"]
-  }],
-  videos: [{
-    id: "mnut",
-    title: "Monkeynuts disappear",
-    year: 1285,
-    type: "video",
-    description: "disappear by monkeynut.",
-    tags: ["monkeynut", "1874", "youtube"]
-  }],
-  magazines: [{
-    id: "magscan",
-    title: "Scan",
-    year: 2001,
-    type: "image",
-    description: "Magazine scan placeholder.",
-    tags: ["Magazine", "2001"]
-  }],
-  interviews: [{
-    id: "Allan Weiss of monkeynut",
-    title: "Monkeynut Text Interview with Allan Weiss",
-    year: 2025,
-    type: "text",
-    description: "Archived text interview.",
-    tags: ["monkeynut", "2025", "Interview", "Text"]
-  }]
-};
+// ---------------- BANDS ---------------- 
+const bands=[ 
+{name:'Korn',desc:'Foundational Bakersfield band. Trauma, funk bass, downtuned guitars.',tags:['nu-metal','90s','groove']},
+{name:'Deftones',desc:'Atmospheric heaviness and abstract emotion.',tags:['alternative','heavy','experimental']},
+{name:'Slipknot',desc:'Nine masked chaos. Iowa aggression.',tags:['extreme','industrial','2000s']},
+{name:'Limp Bizkit',desc:'Rap-metal mainstream explosion.',tags:['rap-metal','mtv','1999']},
+{name:'Mudvayne',desc:'Complex rhythms and facepaint fury.',tags:['progressive','heavy']},
+{name:'Static-X',desc:'Industrial nu-metal machine riffs.',tags:['industrial','aggression']},
+{name:'Coal Chamber',desc:'Dark gothic nu-metal origins.',tags:['goth','early']},
+{name:'Ill Niño',desc:'Latin-influenced nu-metal.',tags:['latin','groove']},
+{name:'Spineshank',desc:'Mechanical aggression.',tags:['industrial']},
+{name:'American Head Charge',desc:'Chaotic Midwest energy.',tags:['underground','extreme']},
+{name:'Taproot',desc:'Melodic Michigan nu-metal.',tags:['melodic']},
+{name:'Sevendust',desc:'Soulful heavy groove.',tags:['groove','alternative']},
+{name:'40 Below Summer',desc:'NYC underground aggression.',tags:['hardcore','nu-metal']},
+{name:'Nothingface',desc:'Dark emotional heaviness.',tags:['dark','heavy']},
+{name:'Drowning Pool',desc:'Arena-ready aggression.',tags:['2000s']},
+{name:'Reveille',desc:'Boston rap-metal.',tags:['rap-metal']},
+{name:'Hed PE',desc:'Punk, hip-hop, and metal crossover.',tags:['punk','rap-metal']},
+{name:'Flaw',desc:'Raw emotional nu-metal.',tags:['emotional']},
+{name:'Kittie',desc:'Early female-fronted nu-metal.',tags:['female-fronted']},
+{name:'Skrape',desc:'Political nu-metal.',tags:['political']},
+{name:'Monkeynut',desc:'Underground Ohio NU (my fave).',tags:['nu metal','90s']},
+{name:'Nounhole',desc:'Underground wavy NU.',tags:['Nounhole','florida']},
+{name:'Linkin Park',desc:'Hybrid Theory-era rap, electronics, and melody.',tags:['rap-metal','2000s','melodic']},
+{name:'Papa Roach',desc:'Angsty rap-metal breakthrough.',tags:['rap-metal','mtv']},
+{name:'Disturbed',desc:'Groove-driven Chicago aggression.',tags:['groove','alternative']},
+{name:'Godsmack',desc:'Tribal rhythms and radio-heavy riffs.',tags:['post-nu','radio']},
+{name:'System Of A Down',desc:'Chaotic political avant-nu.',tags:['experimental','political']},
+{name:'Powerman 5000',desc:'Sci-fi industrial nu-metal.',tags:['industrial','dance-metal']},
+{name:'Orgy',desc:'Synth-heavy dark nu-metal.',tags:['industrial','goth']},
+{name:'Dope',desc:'Street-level industrial aggression.',tags:['industrial','underground']},
+{name:'Primer 55',desc:'Southern rap-metal grit.',tags:['rap-metal','southern']},
+{name:'Trust Company',desc:'Melodic post-nu crossover.',tags:['melodic','radio']},
+{name:'Crossbreed',desc:'Harsh industrial nu-metal hybrid.',tags:['industrial','extreme']},
+{name:'Factory 81',desc:'Chicago underground groove violence.',tags:['underground','groove']},
+{name:'Endo',desc:'Mechanical and cold nu-metal.',tags:['industrial','dark']},
+{name:'Snot',desc:'Funked-out chaos and humor.',tags:['funk','cult']},
+{name:'Stepa',desc:'Early underground melodic nu.',tags:['underground','early']},
+{name:'Ultraspank',desc:'Industrial-leaning groove metal.',tags:['industrial','groove']},
+{name:'Apartment 26',desc:'Cyber-industrial rap-metal.',tags:['industrial','electronic']},
+{name:'Project 86',desc:'Aggressive alt-nu with industrial edge.',tags:['alternative','industrial']},
+{name:'Boy Hits Car',desc:'Percussive tribal nu-metal.',tags:['tribal','experimental']},
+{name:'Pulse Ultra',desc:'Futuristic melodic nu-metal.',tags:['melodic','spacey']},
+{name:'Dry Kill Logic',desc:'Relentless NY aggression.',tags:['hardcore','extreme']},
+{name:'Downthesun',desc:'Slipknot-affiliated raw nu-metal.',tags:['iowa','dark']},
+{name:'Otep',desc:'Poetic rage and avant heaviness.',tags:['female-fronted','experimental']},
+{name:'Twin Method',desc:'Aggressive UK nu-metal.',tags:['uk','groove']},
+{name:'Vacant Stare',desc:'UK rap-metal energy.',tags:['rap-metal','uk']},
+{name:'Pitchshifter',desc:'Industrial crossover evolution.',tags:['industrial','crossover']},
+{name:'Relative Ash',desc:'Technical melodic nu-metal.',tags:['melodic','technical']},
+{name:'Five Pointe O',desc:'Chaotic early-2000s aggression.',tags:['extreme','cult']},
+{name:'No One',desc:'Underrated radio-era nu-metal.',tags:['melodic','2000s']},
+{name:'Switched',desc:'Emotional melodic nu-metal.',tags:['emotional','melodic']},
+{name:'Pressure 4-5',desc:'Post-hardcore nu crossover.',tags:['post-hardcore','nu-metal']},
+{name:'Adema',desc:'Dark melodic Bakersfield nu.',tags:['bakersfield','melodic']},
+{name:'From Zero',desc:'Electronic-tinged nu-metal.',tags:['electronic','melodic']},
+{name:'Simon Says',desc:'Groove-focused Bakersfield act.',tags:['bakersfield','groove']},
+{name:'Index Case',desc:'Dark melodic underground nu.',tags:['underground','emotional']},
+{name:'LeVeL',desc:'Christian-leaning nu-metal.',tags:['melodic','2000s']},
+{name:'The Deadlights',desc:'Industrial nu-metal chaos.',tags:['industrial','dark']},
+{name:'Lifer',desc:'Groove-driven Philly nu.',tags:['groove','underground']},
+{name:'Spout',desc:'Obscure underground nu-metal.',tags:['obscure','underground']},
+{name:'Hospital',desc:'Early underground nu experimentation.',tags:['early','obscure']},
+{name:'One Minute Silence',desc:'UK rap-metal hardcore crossover.',tags:['rap-metal','hardcore']},
+{name:'Darwin’s Waiting Room',desc:'Melodic alternative nu-metal.',tags:['alternative','melodic']},
+{name:'Skindred',desc:'Ragga-infused nu-metal.',tags:['reggae','crossover']},
+{name:'Clawfinger',desc:'European rap-metal pioneers.',tags:['rap-metal','european']},
+{name:'Nullset',desc:'Boston math-leaning nu-metal.',tags:['experimental','mathy']},
+{name:'Motograter',desc:'Primitive rhythm-focused nu.',tags:['tribal','dark']},
+{name:'Linea 77',desc:'Italian rap-metal crossover.',tags:['european','rap-metal']}
+];
 
-const content = document.getElementById("content");
+// ---------------- PHOTOS ----------------
+const photos=[
+{file:'1 (1).jpg',tags:['Monkeynut']},
+{file:'1 (2).jpg',tags:['Monkeynut']},
+{file:'1 (3).jpg',tags:['Monkeynut']},
+{file:'1 (4).jpg',tags:['Monkeynut']},
+{file:'1 (5).jpg',tags:['Monkeynut']},
+{file:'1 (6).jpg',tags:['Monkeynut']},
+{file:'1 (7).jpg',tags:['Monkeynut']},
+{file:'1 (8).jpg',tags:['Monkeynut']},
+{file:'1 (9).jpg',tags:['Monkeynut']},
+{file:'1 (10).jpg',tags:['Monkeynut']},
+{file:'1 (11).jpg',tags:['Monkeynut']},
+{file:'1 (12).jpg',tags:['Monkeynut']},
+{file:'1 (13).jpg',tags:['Monkeynut']},
+{file:'1 (14).jpg',tags:['Monkeynut']},
+{file:'1 (15).jpg',tags:['Monkeynut']},
+{file:'1 (16).jpg',tags:['Monkeynut']},
+{file:'1 (17).jpg',tags:['Monkeynut']},
+{file:'1 (18).jpg',tags:['Monkeynut']},
+{file:'1 (19).jpg',tags:['Monkeynut']},
+{file:'1 (20).jpg',tags:['Monkeynut']},
+{file:'1 (21).jpg',tags:['Monkeynut']},
+{file:'1 (22).jpg',tags:['Monkeynut']},
+{file:'1 (23).jpg',tags:['Monkeynut']},
+{file:'1 (24).jpg',tags:['Monkeynut']},
+{file:'1 (25).jpg',tags:['Monkeynut']},
+{file:'1 (26).jpg',tags:['Monkeynut']},
+{file:'1 (27).jpg',tags:['Monkeynut']},
+{file:'1 (28).jpg',tags:['Monkeynut']},
+{file:'1 (29).jpg',tags:['Monkeynut']},
+{file:'1 (30).jpg',tags:['Monkeynut']},
+{file:'1 (31).jpg',tags:['Monkeynut']},
+{file:'1 (32).jpg',tags:['Monkeynut']},
+{file:'1 (33).jpg',tags:['Monkeynut']},
+{file:'1 (34).jpg',tags:['Monkeynut']},
+{file:'1 (35).jpg',tags:['Monkeynut']},
+{file:'1 (36).jpg',tags:['Monkeynut']},
+{file:'1 (37).jpg',tags:['Monkeynut']},
+{file:'1 (38).jpg',tags:['Monkeynut']},
+{file:'1 (39).jpg',tags:['Monkeynut']},
+{file:'1 (40).jpg',tags:['Monkeynut']},
+{file:'1 (41).jpg',tags:['Monkeynut']},
+{file:'1 (42).jpg',tags:['Monkeynut']},
+{file:'1 (43).jpg',tags:['Monkeynut']}
+];
 
-function loadHome() {
-  content.innerHTML = `
-    <h2>WELCOME</h2>
-    <p>This archive preserves nu metal from varius sources to veiw for the public.</p>
-  `;
+// ---------------- VIDEOS ----------------
+const videos=[
+  { title:'Invitro - When I was a planet', url:'https://www.youtube.com/watch?v=Qk7Z_1AYi_A', tags:['Invitro', 'Music video'] },
+  { title:'LeFT - Insecurity', url:'https://www.youtube.com/watch?v=wG-g-4Ndc_U', tags:['Left', 'Music video'] },
+  { title:'LeFT - Pointless', url:'https://www.youtube.com/watch?v=eDFa9NYbqpc', tags:['Left', 'Live', 'Audio'] },
+  { title:'Eastcide interveiw', url:'https://www.youtube.com/watch?v=g2nESHjDyKk', tags:['Eastcide', 'Interveiw'] },
+  { title:'13 Faces - S.I.O.P', url:'https://www.youtube.com/watch?v=BtcTWh5G-jY', tags:['13 Faces', 'Live'] },
+  { title:'Kink - Yoga', url:'https://www.youtube.com/watch?v=NLSJr-dcZIQ', tags:['Kink', 'Live'] },
+  { title:'Kink - Wind mills', url:'https://www.youtube.com/watch?v=i5w_n6qkHZQ', tags:['Kink', 'Live'] },
+  { title:'LeFT - My disease MV', url:'https://www.youtube.com/watch?v=LC8-vUXMvKg', tags:['Left', 'Live', 'Music video'] },
+  { title:'Kilkus - A.O.C', url:'https://www.youtube.com/watch?v=5gSxUizWbYA', tags:['Kilkus', 'Music video'] },
+  { title:'LeFT - Not afraid', url:'https://www.youtube.com/watch?v=sfmu8Vr99Io', tags:['Left', 'Live', 'Audio'] },
+  { title:'Gazzoleen - CIAD(Call It A Day)', url:'https://www.youtube.com/watch?v=GI4g_GVrHpQ', tags:['Gazzoleen', 'Music video'] },
+  { title:'LeFT - Shack in the woods ep.2 part 4', url:'https://www.youtube.com/watch?v=if9qZBDot6k', tags:['Left', 'Interveiw'] },
+  { title:'LeFt - Shack in the woods ep.2 part 3 ', url:'https://www.youtube.com/watch?v=Apxk3wXCgsk', tags:['LeFt', 'Live'] },
+  { title:'LeFt - Shack in the woods ep.11', url:'https://www.youtube.com/watch?v=laJe7hKrSAA', tags:['LeFt', 'Live'] },
+  { title:'Deftones - Ufest Riot', url:'https://www.youtube.com/watch?v=lISfv6BHGSs', tags:['Deftones', 'TV'] },
+  { title:'S.O.R.E - Position', url:'https://www.youtube.com/watch?v=fhRY6s-aTh8', tags:['S.O.R.E', 'Music Video'] },
+  { title:'Perfect Nothing - Bruised Face', url:'https://www.youtube.com/watch?v=mNE-U11MVFc', tags:['Perfect Nothing', 'Live', 'Music video'] },
+  { title:'Perfect Nothing live in Sydney NSW', url:'https://www.youtube.com/watch?v=tXO17p3Qonc', tags:['Perfect Nothing', 'Live'] },
+  { title:'Perfect Nothing live at Purple Underground', url:'https://www.youtube.com/watch?v=_0-QJulofB8', tags:['Perfect Nothing', 'Live'] },
+  { title:'DENT live at Emerson theater', url:'https://www.youtube.com/watch?v=tyTnPS5C2_g', tags:['DENT', 'Live'] },
+  { title:'Haste the day - Live', url:'https://www.youtube.com/watch?v=h6fjhqhJp_0', tags:['Haste the day', 'Live'] },
+  { title:'616 Undone reunion show at Alrosa Villa', url:'https://www.youtube.com/watch?v=o8lGC94eAg0', tags:['616 Undone', 'Live'] },
+  { title:'616 Undone - Fetish', url:'https://www.youtube.com/watch?v=Y4Zq8AaJgoc', tags:['616 Undone', 'Live'] },
+  { title:'616 Undone - 7 words', url:'https://www.youtube.com/watch?v=BKYXtPICUMc', tags:['616 Undone', 'Live', 'Cover'] },
+  { title:'LeFT - SORE', url:'https://www.youtube.com/watch?v=NONr94w0bf8', tags:['Left', 'Live', 'Audio'] },
+  { title:'LeFT - MFWS', url:'https://www.youtube.com/watch?v=WctRR9jM6U8', tags:['Left', 'Live', 'Audio'] },
+  { title:'Brik - Betrayed', url:'https://www.youtube.com/watch?v=skQSZFChq-I', tags:['Brik', 'Music video'] },
+  { title:'Nervepitch - Stiches', url:'https://www.youtube.com/watch?v=yP2oQLr1mHI', tags:['Nervepitch', 'Music video'] },
+  { title:'Hyphema - In so many ways', url:'https://www.youtube.com/watch?v=iUIs2hi8iqM', tags:['Hyphema', 'Music video'] },
+  { title:'Nervepitch - Live at the dungeon', url:'https://www.youtube.com/watch?v=KhZzAQlK3_A', tags:['Nervepitch', 'Live', 'Audio'] },
+  { title:'Nothingface live at Club Laga', url:'https://www.youtube.com/watch?v=0bpImy-ATFc', tags:['Nothingface', 'Live'] },
+  { title:'Chimira, on their name', url:'https://www.youtube.com/watch?v=HIAIyJTGS8Q', tags:['Chimira', 'Interveiw'] },
+  { title:'Half Gain - Faceoff', url:'https://www.youtube.com/watch?v=r9126heWkOI', tags:['Halfgain', 'Music Video'] },
+  { title:'Irate - Vendetta', url:'https://www.youtube.com/watch?v=b2Y73s6xVNA', tags:['Irate', 'Music Video'] },
+  { title:'Chimaira live at Club Krome', url:'https://www.youtube.com/watch?v=p0so9hK-OTA', tags:['Chimaira', 'Live'] },
+  { title:'9th Corner - Unmasked', url:'https://www.youtube.com/watch?v=TgmFP4ynHrM', tags:['9th corner', 'Music video'] },
+  { title:'Relative Ash interveiw', url:'https://www.youtube.com/watch?v=wYIHhk8xY9c', tags:['Relative Ash', 'Interveiw'] },
+  { title:'Skribble - S.W.K.Y.', url:'https://www.youtube.com/watch?v=ZdM-0c7uLNs', tags:['Skribble', 'Music video'] },
+  { title:'Perfect nothing live reunion', url:'https://www.youtube.com/watch?v=chcpMRdd6w8', tags:['Perfect nothing', 'Live'] },
+  { title:'Poison the well live at knights of columbus', url:'https://www.youtube.com/watch?v=EnANc9TsUWk', tags:['Poison the well', 'Live'] },
+  { title:'Perfect Nothing live at Emerson theater', url:'https://www.youtube.com/watch?v=Zyipxq9k2-w', tags:['Perfect nothing', 'Live'] },
+  { title:'Arizing - Live at the metro', url:'https://www.youtube.com/watch?v=3_-qr5GcC5k', tags:['Arizing', 'Live'] },
+  { title:'I promised the world live at the paper tiger', url:'https://www.youtube.com/watch?v=eW0sKh8SHHg', tags:['I promised the world', 'Live'] },
+  { title:'Static x live at Downtime NYC', url:'https://www.youtube.com/watch?v=1CtuO6mNW0o', tags:['Static x', 'live'] },
+  { title:'Kittie - spit in your eye DVD', url:'https://www.youtube.com/watch?v=BdqPCYybbzI', tags:['Kittie', 'DVD'] },
+  { title:'Gazzoleen - Filter', url:'https://www.youtube.com/watch?v=ykdeYtj5Uec', tags:['Gazzoleen', 'Music video'] },
+  { title:'Skribble - Dreamsmasher', url:'https://www.youtube.com/watch?v=s3p9ZnUF3GQ', tags:['Skribble', 'live'] },
+  { title:'Mainstay - Life to me', url:'https://www.youtube.com/watch?v=rzEYdMudSO8', tags:['Mainstay', 'Music video'] },
+  { title:'Mainstay - Dust', url:'https://www.youtube.com/watch?v=2mIMWanAkIM', tags:['Mainstay', 'Music video'] },
+  { title:'Kittie Interveiw', url:'https://www.youtube.com/watch?v=hxbDgSfLad8', tags:['Kittie', 'interview'] },
+  { title:'Monkeynut - Disappear', url:'https://www.youtube.com/watch?v=ir58mej0qGA', tags:['Monkeynut', 'Ohio', 'Music video'] },
+];
+
+// ---------------- INTERVIEWS ----------------
+const interviews = [
+  {
+    title: "Nounhole Interview",
+    band: "Nounhole",
+    file: "Nounhole.txt",
+    tags: ["Nounhole","interview"]
+  },
+  {
+    title: "Another Interview Example",
+    band: "Monkeynut",
+    file: "Monkeynut.txt",
+    tags: ["Monkeynut","interview"]
+  }
+];
+
+// ---------------- PAPERS ----------------
+const papers=[
+{file:'_1.jpg',tags:['Korn']},
+{file:'_2.jpg',tags:['Deftones']}
+];
+
+// ---------------- FUNCTIONS ----------------
+
+function truncate(text, maxLength = 80){ return text.length <= maxLength ? text : text.slice(0,maxLength)+'…'; }
+
+function match(tags){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  return !q || tags.join(' ').toLowerCase().includes(q);
 }
 
-function loadCategory(category) {
-  let html = `<h2>${category.toUpperCase()}</h2><div class="grid">`;
-  archive[category].forEach(item => {
-    html += `
-      <div class="card">
-        <h3>${item.title}</h3>
-        <p>${item.year}</p>
-        <div class="tags">
-          ${item.tags.map(t => `<span class="tag">${t}</span>`).join("")}
-        </div>
-        <button onclick="loadItem('${category}','${item.id}')">VIEW</button>
+// ---------------- BANDS ----------------
+function renderBands(){
+  const grid=document.getElementById('bandGrid');
+  grid.innerHTML='';
+  bands.filter(b=>match([b.name,...b.tags])).forEach(b=>{
+    const div=document.createElement('div');
+    div.className='band-card';
+    div.innerHTML=`
+      <h3>${b.name}</h3>
+      <p>${truncate(b.desc,80)}</p>
+      <div class="tags">${b.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    `;
+    div.onclick=()=>openDetail(b);
+    grid.appendChild(div);
+  });
+}
+
+function openDetail(b){
+  document.getElementById('detailName').innerText=b.name;
+  document.getElementById('detailDesc').innerText=b.desc;
+  document.getElementById('detailTags').innerHTML=b.tags.map(t=>`<span class="tag">${t}</span>`).join('');
+  const dp=document.getElementById('detailPhotos'); dp.innerHTML='';
+  photos.filter(p=>p.tags.map(t=>t.toLowerCase()).includes(b.name.toLowerCase()))
+    .forEach(p=>dp.innerHTML+=`<div class="media-item"><img src="${p.file}"></div>`);
+  showSection('detail');
+  window.scrollTo(0,0);
+}
+
+function randomBand(){ openDetail(bands[Math.floor(Math.random()*bands.length)]); }
+
+// ---------------- PHOTOS ----------------
+function renderPhotos(){
+  const grid=document.getElementById('photoGrid'); grid.innerHTML='';
+  photos.filter(p=>match(p.tags)).forEach(p=>{
+    grid.innerHTML+=`<div class="media-item"><img src="${p.file}">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+  });
+}
+
+// ---------------- VIDEOS ----------------
+function renderVideos(){
+  const grid=document.getElementById('videoGrid'); grid.innerHTML='';
+  videos.filter(v=>match(v.tags)).forEach(v=>{
+    const div=document.createElement('div');
+    div.className='media-item';
+    div.innerHTML=`
+      <img src="https://img.youtube.com/vi/${getVideoID(v.url)}/hqdefault.jpg">
+      <div class="video-title">${v.title}</div>
+      ${v.tags.map(t=>`<span class="tag">${t}</span>`).join('')}
+    `;
+    div.onclick=()=>window.open(v.url,'_blank');
+    grid.appendChild(div);
+  });
+
+  function getVideoID(url){
+    const match=url.match(/v=([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : '';
+  }
+}
+
+// ---------------- INTERVIEWS ----------------
+function renderInterviews(){
+  const grid = document.getElementById('interviewGrid');
+  grid.innerHTML = '';
+  interviews.filter(i=>match([i.band,...i.tags])).forEach(i=>{
+    grid.innerHTML += `
+      <div class="media-item" onclick="openInterviewFromFile('${i.title.replace(/'/g,"\\'")}', '${i.file}')">
+        <div class="interview-title">${i.title}</div>
+        <div class="interview-box interview-preview">Preview will load when clicked...</div>
+        ${i.tags.map(t=>`<span class="tag">${t}</span>`).join('')}
       </div>
     `;
   });
-  html += `</div>`;
-  content.innerHTML = html;
 }
 
-function loadItem(category, id) {
-  const item = archive[category].find(i => i.id === id);
-
-  let media = "";
-  if (item.type === "image") {
-    media = `<img src="1.jpg" alt="${item.title}" style="width:100%; border:1px solid var(--border); margin-bottom:15px;">`;
-  }
-  if (item.type === "video") {
-    media = `
-      <iframe
-        width="100%"
-        height="360"
-        src="https://www.youtube.com/embed/ir58mej0qGA"
-        title="${item.title}"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-        style="border:1px solid var(--border); margin-bottom:15px;"
-      ></iframe>
-    `;
-  }
-  if (item.type === "text") {
-    media = `<div style="border:1px solid var(--border); padding:15px; margin-bottom:15px; font-size:11px; background:#0b0b0b;">1.What inspired you and your friends to start Monkeynut?
-
- It all started when I moved to Columbus, Ohio to attend the Ohio State University, and being a musician in high school, I wanted to see about joining a band in Columbus. I answered an ad in a local music store looking for a "heavy handed" drummer - that turned out to be Brian Leitwein (our guitarist) who was in a band, and we started jamming together. From there, we went through a couple members, and when we were looking for a second guitarist, Brian's brother Randy Leitwein had gotten older and also played guitar, so he joined the band. Our original bass player Chris Cox joined the band, and that formed the original line up under the name Dominion. We went through a couple singers, and then finally Randy began doing some singing - eventually we stopped looking for a singer, and Randy stepped into the roll - originally he played guitar and sang, but eventually he stopped the guitar and just focused on the vocals.
-
-2.Who were your favorite local Ohio bands to tour withAny fun stories with Cringe, Bobaflex, Supafreak, Tsybil, etc.?
-
-We played with a LOT of local bands from in the Ohio area - too many to mention! Some of the bands we played with a lot are the bands you mentioned - such as Cringe (later named Noise Auction), Bobaflex (we even went down to West Virginia to play with them), Tsybil, Supafreak.
-
-We liked playing with Cringe a lot, and some other memorable bands I can think of are Millenia (from Chillicothe, Ohio), Crush Effect (which was a pretty hard core thrash band), Kids From Krypton (from Toledo), Victim, 616 Undone, etc. Those are some that come to memory, but there were so many that I would have to go back through our old flyers and ticket stubs to remember more of them!
-
-3.What inspired the glow-in-the-dark paint?
-
-The paint idea started with Randy just wearing white makeup-paint on his face on stage, just to stand out a bit from the other local bands. From there, someone brought up the idea of black-light paint, and we thought what would be quite unique, so we gave that a try - originally it was just smearing paint on ourselves in no particular pattern!  That seemed to be well-received, so we developed it further into specific face patterns for each member, and then wearing the black uniforms and adding paint to those. From there, we started bringing out our own black-light stage setup, banners, strobes, etc.  It was something that we were constantly developing, and it was really a way for us to stand out from the rest of the bands in our area.
-
-4.Why did Monkeynut disband Any chance of a reunion someday?
-
-When we decided to disband, we had been playing for 11 years or so, we had turned down a couple of independent record deals (they weren't that good), and we started having kids and buying homes - we just decided that making the band a career might not happen, our priorities were changing, and we wanted to go out while we were still relevant - we saw other local bands that just kept playing "past their prime", and we didn't want to go out like that. It was a tough decision, but in hind sight the record deals we were offered would probably have put us into serious debt!
-
-As for a reunion? Well we are all still in contact today - Brian and I are in a local cover band (just playing classic rock / country songs to have fun), and Randy is working on a new project called My Dark Room - I have been recording some drum tracks for him, and our bassist Mark may be adding some bass tracks for him as well. That being said, I doubt a Monkeynut reunion is in the cards. We do get together and jam Monkenut songs from time to time, but it seems the older we get the harder it is to find time to get together just to hang out, let alone prepare for a reunion.
-
-5.Did you know that some of Monkeynut’s music is being uploaded illegally to streaming platforms?
-
-That doesn't surprise me! We did have a distribution deal with CD Baby to distribute our music (originally selling the CDs, and then digital distribution), and they did distribute our music to a lot of different platforms. We still do get royalty checks from time to time, but it has been long enough that we aren't currently trying to find those that are sharing or uploading the music illegally - the time and resources we would have to spend to do that doesn't warrant the potential return.</div>`;
-  }
-
-  content.innerHTML = `
-    <button onclick="loadCategory('${category}')">← BACK</button>
-    <h2>${item.title}</h2>
-    ${media}
-    <div class="tags">
-      ${item.tags.map(t => `<span class="tag">${t}</span>`).join("")}
-    </div>
-    <p><strong>YEAR:</strong> ${item.year}</p>
-    <p>${item.description}</p>
-  `;
+function openInterviewFromFile(title, filename){
+  fetch(filename)
+    .then(r=>{ if(!r.ok) throw new Error("File not found"); return r.text(); })
+    .then(text=>{
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalText').innerText = text;
+      document.getElementById('interviewModal').classList.remove('hidden');
+    })
+    .catch(err=>{
+      console.error(err);
+      alert("Failed to load interview file: "+filename);
+    });
 }
 
-loadHome();
+function closeInterview(){ document.getElementById('interviewModal').classList.add('hidden'); }
+
+// Clicking outside modal closes it
+document.addEventListener('click', e=>{
+  const modal=document.getElementById('interviewModal');
+  if(e.target===modal) closeInterview();
+});
+
+// ---------------- PAPERS ----------------
+function renderPapers(){
+  const grid=document.getElementById('paperGrid'); grid.innerHTML='';
+  papers.filter(p=>match(p.tags)).forEach(p=>{
+    grid.innerHTML+=`<div class="media-item"><img class="paper-img" src="${p.file}">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+  });
+}
+
+// ---------------- SECTION SWITCH ----------------
+function showSection(id){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ---------------- INITIAL RENDER ----------------
+renderAll();
+function renderAll(){ renderBands(); renderPhotos(); renderVideos(); renderPapers(); renderInterviews(); }
 </script>
-
 </body>
 </html>
-
