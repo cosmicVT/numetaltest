@@ -37,6 +37,64 @@ section.active { display:block; }
 .tags { margin-top:6px; }
 .tag { display:inline-block; background:#000; border:1px solid #333; padding:3px 6px; font-size:11px; margin:2px; color:#8aff00; }
 .media-item img { max-width:100%; filter:grayscale(30%) contrast(120%); }
+
+/* ---------- PAPER / SCAN CARDS ---------- */
+.media-item {
+  position: relative;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.media-item:hover {
+  transform: translateY(-3px);
+}
+
+/* image scans */
+.paper-img {
+  border:1px solid #333;
+  box-shadow: inset 0 0 20px rgba(0,0,0,.6);
+}
+
+/* PDF cards */
+.media-item embed {
+  border:1px solid #333;
+  background:#000;
+  pointer-events:none; /* prevents accidental scroll */
+}
+/* ---------- PDF BADGE ---------- */
+.pdf-badge {
+  position:absolute;
+  top:8px;
+  right:8px;
+  background:#ff0033;
+  color:#000;
+  font-size:10px;
+  font-weight:bold;
+  padding:3px 6px;
+  border:1px solid #000;
+  font-family:Courier New, monospace;
+}
+.scan-title {
+  font-size:13px;
+  margin-top:6px;
+  color:#e5e5e5;
+  text-shadow:1px 1px 0 #000;
+}
+
+.scan-sub {
+  font-size:11px;
+  color:#777;
+  margin-top:2px;
+}
+
+/* ---------- PDF PREVIEW LOCK ---------- */
+.pdf-preview {
+  height:200px;
+  overflow:hidden;
+  pointer-events:none; /* disables scrolling + clicking */
+  border:1px solid #333;
+  background:#000;
+}
+
 iframe { width:100%; height:180px; border:none; }
 .paper { background:#111; border:1px dashed #555; padding:20px; font-family:Courier New,monospace; line-height:1.6; }
 #detail h2 { color:#ff0033; margin-bottom:10px; }
@@ -62,8 +120,57 @@ footer { background:#050505; border-top:2px solid #2e2e2e; padding:20px; text-al
   font-family:Courier New, monospace; color:#ddd;
   position:relative;
 }
+
+/* ---------- MODAL POLISH ---------- */
+.modal-content {
+  box-shadow:0 0 30px rgba(255,0,51,.25);
+}
+
+.modal h3 {
+  color:#ff0033;
+  text-shadow:1px 1px 0 #000;
+  margin-bottom:10px;
+}
+
+.modal img {
+  border:1px solid #333;
+  box-shadow:0 0 20px rgba(0,0,0,.8);
+}
+
 .modal-text { white-space:pre-wrap; line-height:1.6; margin-top:15px; }
 .close { position:absolute; top:10px; right:15px; font-size:22px; cursor:pointer; color:#ff0033; }
+.pdf-card {
+  background:#0d0d0d;
+  border:1px solid #444;
+  padding:20px;
+  text-align:center;
+  cursor:pointer;
+  font-family:Courier New, monospace;
+}
+
+.pdf-card:hover {
+  box-shadow:0 0 12px rgba(138,255,0,.3);
+}
+
+.pdf-icon {
+  font-size:42px;
+  color:#ff0033;
+  margin-bottom:10px;
+}
+
+.pdf-title {
+  font-size:13px;
+  color:#e5e5e5;
+  margin-bottom:8px;
+}
+
+/* ---------- PDF IN MODAL ---------- */
+.modal iframe {
+  width:100%;
+  height:70vh;
+  border:1px solid #333;
+  background:#000;
+}
 </style>
 </head>
 <body>
@@ -350,9 +457,35 @@ const interviews = [
 ];
 
 // ---------------- PAPERS ----------------
-const papers=[
-{file:'_1.jpg',tags:['Korn']},
-{file:'_2.jpg',tags:['Deftones']}
+const papers = [
+  // images
+  { file: '_1.jpg', tags: ['Korn'], type: 'image' },
+  { file: '_2.jpg', tags: ['Deftones'], type: 'image' },
+
+  // PDFs
+  { file: 'hitparadermagazi51unse_21.pdf', tags: ['Various'], type: 'pdf', title: 'Various – Hit Parader Magazine (2006)' },
+  { file: 'hitparadermagazi51unse_0.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_1.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_2.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_4.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_9.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi00unse_11.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_15.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_16.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_17.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_19.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_20.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_21.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse_35.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi00unse_10.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi50unse_43.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi50unse_57.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi50unse_59.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi50unse_60.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'hitparadermagazi51unse.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'Nu Metal Collection.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+  { file: 'Revolver_03_2001.pdf', tags: ['Various'], type: 'pdf', title: ' ()' },
+
 ];
 
 // ---------------- FUNCTIONS ----------------
@@ -431,7 +564,7 @@ function renderInterviews(){
     grid.innerHTML += `
       <div class="media-item" onclick="openInterviewFromFile('${i.title.replace(/'/g,"\\'")}', '${i.file}')">
         <div class="interview-title">${i.title}</div>
-        <div class="interview-box interview-preview">Preview will load when clicked...</div>
+        <div class="interview-box interview-preview">Click to view interview</div>
         ${i.tags.map(t=>`<span class="tag">${t}</span>`).join('')}
       </div>
     `;
@@ -454,6 +587,22 @@ function openInterviewFromFile(title, filename){
 
 function closeInterview(){ document.getElementById('interviewModal').classList.add('hidden'); }
 
+function openPDFModal(title, file){
+  document.getElementById('modalTitle').innerText = title;
+  document.getElementById('modalText').innerHTML = `
+    <iframe src="${file}"></iframe>
+  `;
+  document.getElementById('interviewModal').classList.remove('hidden');
+}
+
+function openImageModal(file){
+  document.getElementById('modalTitle').innerText = 'Scan';
+  document.getElementById('modalText').innerHTML = `
+    <img src="${file}" style="width:100%;">
+  `;
+  document.getElementById('interviewModal').classList.remove('hidden');
+}
+
 // Clicking outside modal closes it
 document.addEventListener('click', e=>{
   const modal=document.getElementById('interviewModal');
@@ -462,10 +611,40 @@ document.addEventListener('click', e=>{
 
 // ---------------- PAPERS ----------------
 function renderPapers(){
-  const grid=document.getElementById('paperGrid'); grid.innerHTML='';
+  const grid = document.getElementById('paperGrid');
+  grid.innerHTML = '';
+
   papers.filter(p=>match(p.tags)).forEach(p=>{
-    grid.innerHTML+=`<div class="media-item"><img class="paper-img" src="${p.file}">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+
+    if (p.type === 'image') {
+      grid.innerHTML += `
+        <div class="media-item" onclick="openImageModal('${p.file}')">
+          <img class="paper-img" src="${p.file}">
+          <div class="scan-sub">image scan</div>
+          ${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}
+        </div>
+      `;
+    }
+
+if (p.type === 'pdf') {
+  grid.innerHTML += `
+    <div class="media-item" onclick="openPDFModal('${p.title}','${p.file}')">
+      <span class="pdf-badge">PDF</span>
+      <div class="pdf-preview" style="height:200px; overflow:hidden;">
+        <iframe src="${p.file}#page=1" 
+                width="100%" 
+                height="400px" 
+                style="pointer-events:none; border:none;"></iframe>
+      </div>
+      <div class="scan-title">${p.title}</div>
+      <div class="scan-sub">click to view document</div>
+      ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+    </div>
+  `;
+}
+
   });
+
 }
 
 // ---------------- SECTION SWITCH ----------------
