@@ -569,7 +569,7 @@ function openDetail(b){
   document.getElementById('detailTags').innerHTML=b.tags.map(t=>`<span class="tag">${t}</span>`).join('');
   const dp=document.getElementById('detailPhotos'); dp.innerHTML='';
   photos.filter(p=>p.tags.map(t=>t.toLowerCase()).includes(b.name.toLowerCase()))
-    .forEach(p=>dp.innerHTML+=`<div class="media-item"><img src="${p.file}"></div>`);
+    .forEach(p=>dp.innerHTML+=`<div class="media-item"><img src="images/${p.file}"></div>`);
   showSection('detail');
   window.scrollTo(0,0);
 }
@@ -580,7 +580,7 @@ function randomBand(){ openDetail(bands[Math.floor(Math.random()*bands.length)])
 function renderPhotos(){
   const grid=document.getElementById('photoGrid'); grid.innerHTML='';
   photos.filter(p=>match(p.tags)).forEach(p=>{
-    grid.innerHTML+=`<div class="media-item"><img src="${p.file}">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
+    grid.innerHTML+=`<div class="media-item"><img src="images/${p.file}">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`;
   });
 }
 
@@ -667,8 +667,8 @@ function renderPapers(){
 
     if (p.type === 'image') {
       grid.innerHTML += `
-        <div class="media-item" onclick="openImageModal('${p.file}')">
-          <img class="paper-img" src="${p.file}">
+        <div class="media-item" onclick="openImageModal('images/${p.file}')">
+          <img class="paper-img" src="images/${p.file}">
           <div class="scan-sub">image scan</div>
           ${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}
         </div>
@@ -708,5 +708,4 @@ function renderAll(){ renderBands(); renderPhotos(); renderVideos(); renderPaper
 </script>
 </body>
 </html>
-
 
